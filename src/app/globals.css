@@ -1,26 +1,550 @@
 @import "tailwindcss";
 
+/* ════════════════════════════════════════════════════════════
+   StallTalk – Cinematic Design System
+   Dark editorial · Minimal · Typography-first · GSAP-ready
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts will be loaded via layout.tsx ── */
+
+/* ── Design Tokens ───────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --black: #09090b;
+  --surface: #0f0f11;
+  --surface-2: #141416;
+  --surface-3: #1a1a1e;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hi: rgba(255, 255, 255, 0.12);
+
+  --violet: #7c5cfc;
+  /* primary accent — restrained */
+  --violet-dim: rgba(124, 92, 252, 0.15);
+  --violet-glow: rgba(124, 92, 252, 0.35);
+  --blue-cold: #3a7bd5;
+  --blue-dim: rgba(58, 123, 213, 0.12);
+
+  --text-1: #f3f3f3;
+  --text-2: #e0e0e8;
+  --text-3: #b0b0c0;
+  --text-accent: #c4b5fd;
+  --text-secondary: var(--text-2);
+  --text-muted: var(--text-3);
+
+  --font-display: 'Playfair Display', 'Georgia', serif;
+  --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Reset & Base ────────────────────────────────────────── */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--black);
+  color: var(--text-1);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 92, 252, 0.3);
+  border-radius: 2px;
+}
+
+::selection {
+  background: rgba(124, 92, 252, 0.25);
+  color: var(--text-1);
+}
+
+/* ════════════════════════════════════════════════════════════
+   NOISE / GRAIN OVERLAY
+   ════════════════════════════════════════════════════════════ */
+.noise-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  opacity: 0.01;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   ROOT WRAPPER
+   ════════════════════════════════════════════════════════════ */
+.stalltalk-root {
+  position: relative;
+  background: var(--black);
+}
+
+/* ════════════════════════════════════════════════════════════
+   NAVBAR
+   ════════════════════════════════════════════════════════════ */
+.st-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0;
+  /* fully transparent – no glass, no blur */
+  background: transparent;
+}
+
+.st-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.75rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Logo */
+.st-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-1);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  transition: opacity 0.2s;
+}
+
+.st-logo:hover {
+  opacity: 0.7;
+}
+
+.st-logo-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--violet);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Nav links */
+.st-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.st-nav-link {
+  text-decoration: none;
+  color: var(--text-2);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+
+.st-nav-link:hover {
+  color: var(--text-1);
+}
+
+/* Nav CTA */
+.st-nav-cta {
+  text-decoration: none;
+  color: var(--text-1);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1.125rem;
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  transition: border-color 0.2s, background 0.2s;
+  background: transparent;
+  letter-spacing: 0.01em;
+}
+
+.st-nav-cta:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ════════════════════════════════════════════════════════════
+   HERO SECTION
+   ════════════════════════════════════════════════════════════ */
+.st-hero {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  /* columns: gutter | content | gutter */
+  grid-template-columns: 1fr min(700px, 90vw) 1fr;
+  grid-template-rows: auto;
+  align-items: center;
+  justify-items: center;
+  padding-top: 6rem;
+  padding-bottom: 5rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Everything spans the center column */
+.st-hero>* {
+  grid-column: 2;
+}
+
+/* Ambient spotlight */
+.st-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  grid-column: 1 / -1;
+  background: radial-gradient(ellipse 70% 60% at 50% 42%,
+      rgba(124, 92, 252, 0.07) 0%,
+      transparent 70%);
+  z-index: 0;
+  will-change: transform;
+}
+
+/* Tagline chip */
+.st-hero-tagline {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 2.5rem;
+}
+
+.st-tagline-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--violet);
+  flex-shrink: 0;
+  box-shadow: 0 0 8px var(--violet);
+}
+
+/* ─── DOORWAY VISUAL ─────────────────────────────────────── */
+.st-door-wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 2;
+  margin-bottom: 3rem;
+  /* Doorway dimensions */
+  width: 220px;
+  height: 340px;
+}
+
+.st-door-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-left: 2px solid rgba(255, 255, 255, 0.09);
+  border-right: 2px solid rgba(255, 255, 255, 0.09);
+  border-top: 2px solid rgba(255, 255, 255, 0.09);
+  border-radius: 120px 120px 0 0;
+  /* subtle outer glow – very faint */
+  box-shadow:
+    inset 0 0 60px rgba(124, 92, 252, 0.03),
+    0 0 80px rgba(124, 92, 252, 0.08),
+    0 0 200px rgba(124, 92, 252, 0.04);
+}
+
+.st-door-inner {
+  position: absolute;
+  inset: 12px 12px 0 12px;
+  border-radius: 108px 108px 0 0;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.st-door-glow {
+  position: absolute;
+  inset: 0;
+  /* The "light beyond" – warm-to-violet haze */
+  background: radial-gradient(ellipse 90% 80% at 50% 90%,
+      rgba(124, 92, 252, 0.22) 0%,
+      rgba(58, 123, 213, 0.10) 40%,
+      transparent 75%);
+}
+
+.st-door-bottom-edge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(124, 92, 252, 0.6),
+      rgba(58, 123, 213, 0.5),
+      transparent);
+  filter: blur(1px);
+}
+
+/* Keyhole */
+.st-keyhole {
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: 18px;
+  height: 28px;
+}
+
+.st-keyhole::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(124, 92, 252, 0.5);
+  box-shadow: 0 0 6px rgba(124, 92, 252, 0.4);
+}
+
+.st-keyhole::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 14px;
+  border: 1.5px solid rgba(124, 92, 252, 0.4);
+  border-top: none;
+  border-radius: 0 0 3px 3px;
+}
+
+/* ─── FLOATING FRAGMENTS ─────────────────────────────────── */
+.st-fragment {
+  position: absolute;
+  /* use CSS custom props set per element via React inline styles */
+  top: 50%;
+  left: 50%;
+  transform: translate(calc(-50% + var(--frag-x)), calc(-50% + var(--frag-y)));
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-3);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  user-select: none;
+  /* subtle dashed underline to feel like handwritten note */
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+  padding-bottom: 1px;
+  will-change: transform;
+}
+
+/* ─── HEADLINE ───────────────────────────────────────────── */
+.st-hero-head {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  text-align: center;
+  color: var(--text-1);
+  margin-bottom: 1.5rem;
+  /* editorial: upright normal + italic word */
+}
+
+.st-hero-head em {
+  font-style: italic;
+  font-weight: 500;
+  /* violet shimmer — very subtle */
+  background: linear-gradient(135deg, #d4c5ff 0%, #a78bfa 50%, #7c5cfc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── SUBHEADLINE ────────────────────────────────────────── */
+.st-hero-sub {
+  position: relative;
+  z-index: 2;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.75;
+  color: var(--text-2);
+  text-align: center;
+  max-width: 440px;
+  margin: 0 auto 2.75rem;
+  letter-spacing: 0.01em;
+}
+
+.st-br-desk {
+  display: block;
+}
+
+/* ─── CTA BUTTONS ────────────────────────────────────────── */
+.st-cta-row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.st-btn-primary {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background: var(--violet);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 7px;
+  letter-spacing: 0.01em;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s var(--ease-cinematic);
+  box-shadow: 0 0 0 0 var(--violet-glow);
+}
+
+.st-btn-primary:hover {
+  background: #8f6dfd;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px var(--violet-glow);
+}
+
+.st-btn-primary:active {
+  transform: translateY(0);
+}
+
+.st-btn-ghost {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.75rem;
+  color: var(--text-2);
+  font-size: 0.9rem;
+  font-weight: 400;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  transition: color 0.2s, border-color 0.2s, transform 0.15s;
+  letter-spacing: 0.01em;
+}
+
+.st-btn-ghost:hover {
+  color: var(--text-1);
+  border-color: var(--border-hi);
+  transform: translateY(-1px);
+}
+
+/* ─── HERO BOTTOM FADE ───────────────────────────────────── */
+.st-hero-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, var(--black));
+  pointer-events: none;
+  grid-column: 1 / -1;
+  z-index: 3;
+}
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .st-nav-links {
+    display: none;
+  }
+
+  .st-nav-inner {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .st-hero {
+    grid-template-columns: 1fr min(92vw, 100%) 1fr;
+  }
+
+  .st-hero-head {
+    font-size: clamp(2.8rem, 12vw, 5rem);
+  }
+
+  .st-door-wrap {
+    width: 160px;
+    height: 260px;
+    margin-bottom: 2.5rem;
+  }
+
+  .st-fragment {
+    font-size: 0.58rem;
+  }
+
+  .st-br-desk {
+    display: none;
+  }
+
+  .st-cta-row {
+    gap: 0.75rem;
+  }
+
+  .st-btn-primary,
+  .st-btn-ghost {
+    padding: 0.7rem 1.4rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .st-door-wrap {
+    width: 130px;
+    height: 210px;
+  }
+
+  .st-fragment {
+    display: none;
+  }
+
+  .st-fragment:nth-child(1),
+  .st-fragment:nth-child(2) {
+    display: block;
+    font-size: 0.55rem;
+  }
 }
