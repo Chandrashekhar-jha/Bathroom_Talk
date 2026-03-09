@@ -13,15 +13,15 @@ const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
   :root {
-    --bg: #0a0a0f;
-    --bg-card: #111118;
+    --bg: #0d0d14;
+    --bg-card: #1c1c28;
     --violet: #7c5cfc;
-    --violet-glow: rgba(124,92,252,0.15);
+    --violet-glow: rgba(124,92,252,0.4);
     --cyan: #22d3ee;
-    --text-1: #f3f3f3;
+    --text-1: #ffffff;
     --text-2: #e0e0e8;
-    --border: rgba(255,255,255,0.2);
-    --border-hi: rgba(255,255,255,0.4);
+    --border: rgba(255,255,255,0.4);
+    --border-hi: rgba(255,255,255,0.6);
     --font-head: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -41,15 +41,15 @@ const styles = `
     overflow: hidden;
   }
 
-  .j-noise {
-    position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.005;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
+  /* Atmosphere - Brighter Homepage Spot */
   .j-glow {
-    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(34,211,238,0.04) 0%, transparent 60%);
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 38%, rgba(124,92,252,0.25) 0%, transparent 70%);
+    pointer-events: none; z-index: 1;
+  }
+  .j-glow-2 {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 40% 35% at 50% 55%, rgba(34,211,238,0.18) 0%, transparent 65%);
     pointer-events: none; z-index: 1;
   }
 
@@ -71,7 +71,7 @@ const styles = `
     border: 1px solid var(--border);
     border-radius: 24px;
     padding: 3rem 2.5rem;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
     text-align: center;
   }
 
@@ -80,7 +80,8 @@ const styles = `
     background: rgba(34,211,238,0.1);
     border: 1px solid rgba(34,211,238,0.2);
     display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 1.5rem; color: var(--cyan);
+    margin: 0 auto 1.5rem; color: #ffffff;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
   }
 
   .j-title {
@@ -104,7 +105,7 @@ const styles = `
     box-shadow: 0 0 0 4px rgba(34,211,238,0.1);
     transform: scale(1.02);
   }
-  .j-input::placeholder { letter-spacing: normal; text-transform: none; font-size: 1rem; opacity: 0.3; }
+  .j-input::placeholder { letter-spacing: normal; text-transform: none; font-size: 1rem; opacity: 0.5; color: #ffffff; }
 
   .j-identity-preview {
     background: rgba(255,255,255,0.02);
@@ -154,7 +155,10 @@ export default function JoinStall() {
   const [previewName, setPreviewName] = useState(PREVIEW_NAMES[0]);
 
   useEffect(() => {
-    gsap.from(boxRef.current, { y: 30, opacity: 0, duration: 1, ease: 'expo.out' });
+    const ctx = gsap.context(() => {
+      gsap.set(boxRef.current, { y: 30, opacity: 0 });
+      gsap.to(boxRef.current, { y: 0, opacity: 1, duration: 1, ease: 'expo.out', delay: 0.2 });
+    });
 
     // Identity preview loop
     const interval = setInterval(() => {
@@ -164,11 +168,18 @@ export default function JoinStall() {
       });
     }, 2000);
 
-    return () => clearInterval(interval);
+    return () => {
+      ctx.revert();
+      clearInterval(interval);
+    };
   }, []);
 
   async function handleJoin() {
-    if (!code.trim()) { setError('Please enter an invite code.'); return; }
+    if (!code.trim()) {
+      alert("Please enter a room name");
+      setError('Please enter an invite code.');
+      return;
+    }
     setError(''); setLoading(true);
 
     try {
@@ -190,8 +201,8 @@ export default function JoinStall() {
         role: data.role,
       });
 
-      // Immediate redirect to the stall
-      router.push(`/stall/${data.groupId}`);
+      // Immediate redirect to the messages route
+      router.push(`/messages/${data.groupId}`);
 
     } catch (e: any) {
       setError(e.message || 'Access denied. Check your code.');
@@ -204,8 +215,8 @@ export default function JoinStall() {
     <>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
       <div className="j-page">
-        <div className="j-noise" aria-hidden />
         <div className="j-glow" aria-hidden />
+        <div className="j-glow-2" aria-hidden />
 
         <div className="j-box" ref={boxRef}>
           <Link href="/" className="j-back">

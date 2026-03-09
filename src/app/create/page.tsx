@@ -6,6 +6,7 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ArrowLeft, Sparkles, Check, Copy } from 'lucide-react';
 import { getSessionId, saveStallSession } from '@/lib/session';
+import { v4 as uuidv4 } from 'uuid';
 
 const CATEGORIES = ['College', 'Office', 'Friends', 'Community', 'Confession', 'Private'];
 
@@ -13,15 +14,15 @@ const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
   :root {
-    --bg: #0a0a0f;
-    --bg-card: #111118;
+    --bg: #0d0d14;
+    --bg-card: #1c1c28;
     --violet: #7c5cfc;
-    --violet-glow: rgba(124,92,252,0.15);
+    --violet-glow: rgba(124,92,252,0.4);
     --cyan: #22d3ee;
-    --text-1: #f3f3f3;
+    --text-1: #ffffff;
     --text-2: #e0e0e8;
-    --border: rgba(255,255,255,0.2);
-    --border-hi: rgba(255,255,255,0.4);
+    --border: rgba(255,255,255,0.4);
+    --border-hi: rgba(255,255,255,0.6);
     --font-head: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -42,15 +43,15 @@ const styles = `
     overflow: hidden;
   }
 
-  /* Noise & Atmosphere */
-  .c-noise {
-    position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.005;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
+  /* Atmosphere - Brighter Homepage Spot */
   .c-glow {
-    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(124,92,252,0.06) 0%, transparent 60%);
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 38%, rgba(124,92,252,0.25) 0%, transparent 70%);
+    pointer-events: none; z-index: 1;
+  }
+  .c-glow-2 {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 40% 35% at 50% 55%, rgba(34,211,238,0.18) 0%, transparent 65%);
     pointer-events: none; z-index: 1;
   }
 
@@ -75,7 +76,7 @@ const styles = `
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 2.5rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
   }
 
   /* Header */
@@ -90,8 +91,8 @@ const styles = `
   .c-group { margin-bottom: 1.5rem; }
   .c-label {
     display: block; font-family: var(--font-mono); font-size: 0.72rem;
-    color: var(--cyan); text-transform: uppercase; letter-spacing: 0.05em;
-    margin-bottom: 0.6rem; font-weight: 500;
+    color: #4ade80; text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 0.6rem; font-weight: 600;
   }
   .c-input, .c-textarea {
     width: 100%; background: var(--bg);
@@ -165,7 +166,8 @@ const styles = `
   }
   .c-code-val {
     font-family: var(--font-mono); font-size: 2.5rem; font-weight: 700;
-    letter-spacing: 0.1em; color: var(--cyan); margin-bottom: 0.5rem;
+    letter-spacing: 0.1em; color: #ffffff; margin-bottom: 0.5rem;
+    text-shadow: 0 0 20px rgba(34,211,238,0.3);
   }
   .c-id-text {
     font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-2);
@@ -191,34 +193,38 @@ export default function CreateStall() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    gsap.from(boxRef.current, { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out' });
+    const ctx = gsap.context(() => {
+      gsap.set(boxRef.current, { y: 20, opacity: 0 });
+      gsap.to(boxRef.current, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.2 });
+    });
+    return () => ctx.revert();
   }, []);
 
   async function handleCreate() {
-    if (!name.trim()) { setError('Stall name is required.'); return; }
+    if (!name.trim()) {
+      alert("Please enter a room name");
+      setError('Stall name is required.');
+      return;
+    }
     setError(''); setLoading(true);
 
     try {
       const sessionId = getSessionId();
-      const res = await fetch('/api/groups', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description: desc, sessionId, category }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const groupId = uuidv4();
+      const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const anonymousName = `Ghost_${Math.floor(Math.random() * 9000) + 1000}`;
 
       saveStallSession({
-        groupId: data.groupId,
-        anonymousName: data.anonymousName,
-        name: data.name,
-        description: data.description,
-        inviteCode: data.inviteCode,
+        groupId,
+        anonymousName,
+        name,
+        description: desc,
+        inviteCode,
         role: 'creator',
       });
 
-      // Immediate redirect to the stall
-      router.push(`/stall/${data.groupId}`);
+      // Immediate redirect to the messages route
+      router.push(`/messages/${groupId}`);
 
     } catch (e: any) {
       setError(e.message || 'Something went wrong');
@@ -231,8 +237,8 @@ export default function CreateStall() {
     <>
       <style dangerouslySetInnerHTML={{ __html: styles }} />
       <div className="c-page">
-        <div className="c-noise" aria-hidden />
         <div className="c-glow" aria-hidden />
+        <div className="c-glow-2" aria-hidden />
 
         <div className="c-box" ref={boxRef}>
           <Link href="/" className="c-back">

@@ -55,11 +55,11 @@ const styles = `
     --cyan-dim: rgba(34,211,238,0.12);
     --cyan-glow: rgba(34,211,238,0.25);
     --indigo: #818cf8;
-    --text1: #f3f3f3;
-    --text2: #e0e0e8;
-    --text3: rgba(255,255,255,0.2);
-    --border: rgba(255,255,255,0.06);
-    --border-hi: rgba(255,255,255,0.12);
+    --text1: #ffffff;
+    --text2: #f0f0f5;
+    --text3: rgba(255,255,255,0.85);
+    --border: rgba(255,255,255,0.25);
+    --border-hi: rgba(255,255,255,0.4);
     --font-head: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', 'Manrope', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -78,7 +78,7 @@ const styles = `
 
   /* ── NOISE ── */
   .b-noise {
-    pointer-events: none; position: fixed; inset: 0; z-index: 999; opacity: 0.03;
+    pointer-events: none; position: fixed; inset: 0; z-index: 999; opacity: 0.005;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 160px 160px;
   }
@@ -233,7 +233,7 @@ const styles = `
     transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--fy)));
     font-family: var(--font-mono);
     font-size: 0.62rem; font-weight: 400;
-    color: rgba(255,255,255,0.16);
+    color: rgba(255,255,255,0.85);
     white-space: nowrap; pointer-events: none; user-select: none;
     border-bottom: 1px dashed rgba(255,255,255,0.06);
     padding-bottom: 1px; will-change: transform;
@@ -341,12 +341,12 @@ const styles = `
   }
   .b-note-text {
     font-family: var(--font-mono); font-size: 0.8rem; font-weight: 400;
-    color: rgba(243,243,243,0.75); line-height: 1.6;
+    color: #ffffff; line-height: 1.6;
   }
   .b-note-tag {
     position: absolute; bottom: 0.75rem; right: 1rem;
     font-family: var(--font-mono); font-size: 0.58rem;
-    color: rgba(255,255,255,0.12); letter-spacing: 0.02em;
+    color: rgba(255,255,255,0.6); letter-spacing: 0.02em;
   }
 
   /* ── COUNTERS ── */
@@ -461,7 +461,7 @@ const styles = `
   .b-chat-msg { display: flex; flex-direction: column; gap: 0.2rem; opacity: 0; }
   .b-chat-msg.visible { opacity: 1; transition: opacity 0.5s ease; }
   .b-msg-name { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.04em; }
-  .b-msg-text { font-family: var(--font-mono); font-size: 0.82rem; color: rgba(243,243,243,0.8); line-height: 1.5; }
+  .b-msg-text { font-family: var(--font-mono); font-size: 0.82rem; color: #ffffff; line-height: 1.5; }
   .b-typing { display: flex; align-items: center; gap: 0.4rem; }
   .b-typing-name { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text2); }
   .b-typing-dots { display: flex; gap: 3px; }
@@ -506,7 +506,7 @@ const styles = `
     transition: color 0.2s; font-weight: 400;
   }
   .b-footer-link:hover { color: var(--text1); }
-  .b-footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.2); }
+  .b-footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
@@ -687,15 +687,15 @@ export default function LandingPage() {
         <nav ref={navRef} className="b-nav">
           <div className="b-nav-inner">
             <Link href="/" className="b-logo">
-              <span className="b-logo-icon">B</span>
-              Bathroom
+              <span className="b-logo-icon">S</span>
+              StallTalk
             </Link>
             <div className="b-nav-links">
               <Link href="#how" className="b-nav-link">How it Works</Link>
               <Link href="#voices" className="b-nav-link">Voices</Link>
               <Link href="#safety" className="b-nav-link">Safety</Link>
             </div>
-            <Link href="/join" className="b-nav-cta">Enter Bathroom</Link>
+            <Link href="/join" className="b-nav-cta">Enter StallTalk</Link>
           </div>
         </nav>
 
@@ -740,13 +740,13 @@ export default function LandingPage() {
 
           {/* Sub */}
           <p ref={subRef} className="b-hero-sub">
-            Bathroom is a private anonymous space where students, teams, and communities share what they really think.
+            StallTalk is a private anonymous space where students, teams, and communities share what they really think.
           </p>
 
           {/* CTAs */}
           <div ref={ctaRef} className="b-hero-cta">
             <Link href="/join" className="b-btn-primary">
-              Enter Bathroom →
+              Enter StallTalk →
             </Link>
             <Link href="/join" className="b-btn-secondary">
               Join with Code
@@ -809,7 +809,7 @@ export default function LandingPage() {
 
           <div ref={howRef} className="b-how-grid">
             {[
-              { num: '01', title: 'Enter a Stall', desc: 'Join a private anonymous room using a short invite code. No account needed. No email.' },
+              { num: '01', title: 'Enter a Stall', desc: 'Join a private anonymous room using a short invite code. No account needed.' },
               { num: '02', title: 'Become Anonymous', desc: 'You get a randomly generated identity like ShadowFox or MidnightEcho. Nobody knows who you are.' },
               { num: '03', title: 'Speak Freely', desc: 'Share thoughts, confessions, reactions, and feedback without fear of judgment.' },
             ].map(({ num, title, desc }) => (
@@ -828,7 +828,7 @@ export default function LandingPage() {
         {/* ════════════ IDENTITY GENERATOR ════════════ */}
         <div ref={identityRef} className="b-identity">
           <div className="b-identity-inner">
-            <span className="b-section-label b-reveal">Your Bathroom Identity</span>
+            <span className="b-section-label b-reveal">Your StallTalk Identity</span>
             <p className="b-section-title b-reveal" style={{ fontFamily: 'var(--font-head)' }}>You enter as...</p>
             <span ref={idRef} className="b-id-display b-reveal">{currentId}</span>
             <div>
@@ -844,7 +844,7 @@ export default function LandingPage() {
         <div ref={chatRef} className="b-chat-wrap">
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <span className="b-section-label">Live Preview</span>
-            <h2 className="b-section-title">Inside a Bathroom stall</h2>
+            <h2 className="b-section-title">Inside a StallTalk stall</h2>
             <p className="b-section-sub">Anonymous. Real-time. Honest.</p>
           </div>
 
@@ -893,11 +893,11 @@ export default function LandingPage() {
               when <em>nobody knows it's them.</em>
             </h2>
             <p className="b-final-sub b-reveal">
-              Bathroom is that place. A private room on the internet where your words matter more than your identity.
+              StallTalk is that place. A private room on the internet where your words matter more than your identity.
             </p>
             <div className="b-reveal">
               <Link href="/join" className="b-btn-primary" style={{ display: 'inline-flex' }}>
-                Enter Bathroom →
+                Enter StallTalk →
               </Link>
             </div>
           </div>
@@ -907,15 +907,15 @@ export default function LandingPage() {
         <footer className="b-footer">
           <div className="b-footer-inner">
             <Link href="/" className="b-footer-brand">
-              <span className="b-logo-icon">B</span>
-              Bathroom
+              <span className="b-logo-icon">S</span>
+              StallTalk
             </Link>
             <div className="b-footer-links">
               <Link href="#" className="b-footer-link">About</Link>
               <Link href="#safety" className="b-footer-link">Safety</Link>
               <Link href="#" className="b-footer-link">Privacy</Link>
             </div>
-            <span className="b-footer-copy">© 2026 Bathroom</span>
+            <span className="b-footer-copy">© 2026 StallTalk</span>
           </div>
         </footer>
       </div>

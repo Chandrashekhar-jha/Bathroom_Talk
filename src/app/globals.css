@@ -23,10 +23,10 @@
   --blue-cold: #3a7bd5;
   --blue-dim: rgba(58, 123, 213, 0.12);
 
-  --text-1: #f3f3f3;
-  --text-2: #e0e0e8;
-  --text-3: #b0b0c0;
-  --text-accent: #c4b5fd;
+  --text-1: #ffffff;
+  --text-2: #f0f0f5;
+  --text-3: #d1d1e0;
+  --text-accent: #dcd7ff;
   --text-secondary: var(--text-2);
   --text-muted: var(--text-3);
 
@@ -88,7 +88,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 200;
-  opacity: 0.01;
+  opacity: 0.005;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
   background-size: 200px 200px;
 }

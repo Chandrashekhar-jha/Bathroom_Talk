@@ -102,7 +102,7 @@ export default function AdminPage({ params }: { params: Promise<{ id: string }> 
             {/* Navbar */}
             <header className="sticky top-0 z-40 glass border-b border-white/5">
                 <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-                    <Link href={`/stall/${id}`} className="p-1.5 rounded-lg hover:bg-white/5 text-[var(--text-muted)] hover:text-white transition-all">
+                    <Link href={`/messages/${id}`} className="p-1.5 rounded-lg hover:bg-white/5 text-[var(--text-muted)] hover:text-white transition-all">
                         <ArrowLeft size={18} />
                     </Link>
                     <div>
@@ -120,8 +120,8 @@ export default function AdminPage({ params }: { params: Promise<{ id: string }> 
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all capitalize ${activeTab === tab
-                                    ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30'
-                                    : 'text-[var(--text-muted)] hover:text-white hover:bg-white/5'
+                                ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30'
+                                : 'text-[var(--text-muted)] hover:text-white hover:bg-white/5'
                                 }`}
                         >
                             {tab === 'members' ? <Users size={14} /> : <Flag size={14} />}

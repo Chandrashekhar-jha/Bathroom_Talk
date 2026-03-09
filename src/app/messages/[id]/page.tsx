@@ -19,18 +19,18 @@ const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
   :root {
-    --bg: #0a0a0f;
-    --bg-side: #0e0e14;
-    --bg-card: #111118;
+    --bg: #0d0d14;
+    --bg-side: #11111a;
+    --bg-card: #181822;
     --violet: #7c5cfc;
-    --violet-glow: rgba(124,92,252,0.1);
+    --violet-glow: rgba(124,92,252,0.25);
     --cyan: #22d3ee;
-    --cyan-glow: rgba(34,211,238,0.1);
-    --text-1: #f3f3f3;
+    --cyan-glow: rgba(34,211,238,0.2);
+    --text-1: #ffffff;
     --text-2: #e0e0e8;
     --text-3: #b0b0c0;
-    --border: rgba(255,255,255,0.1);
-    --border-hi: rgba(255,255,255,0.25);
+    --border: rgba(255,255,255,0.35);
+    --border-hi: rgba(255,255,255,0.55);
     --font-head: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -168,7 +168,7 @@ const styles = `
   }
   
   .s-noise {
-    position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.02;
+    position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.005;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -221,6 +221,28 @@ export default function StallPage({ params }: { params: Promise<{ id: string }> 
         // Fetch group info & posts
         const load = async () => {
             try {
+                // Try to get from localStorage first (for newly created rooms/demo mode)
+                const localSession = getStallSession(id);
+
+                if (localSession) {
+                    setGroup({
+                        _id: localSession.groupId,
+                        name: localSession.name,
+                        description: localSession.description,
+                        inviteCode: localSession.inviteCode,
+                        memberCount: 1, // Placeholder for local mode
+                        creatorSession: sessionId,
+                        currentMember: {
+                            anonymousName: localSession.anonymousName,
+                            role: localSession.role,
+                            mutedUntil: null
+                        }
+                    });
+                    setIsLoading(false);
+                    return;
+                }
+
+                // Fallback to API
                 const [gRes, pRes] = await Promise.all([
                     fetch(`/api/groups/${id}`, { headers: { 'x-session-id': sessionId } }),
                     fetch(`/api/posts?groupId=${id}`, { headers: { 'x-session-id': sessionId } })
@@ -251,7 +273,7 @@ export default function StallPage({ params }: { params: Promise<{ id: string }> 
     const isAdmin = group?.currentMember?.role === 'creator';
     const myName = stallSession?.anonymousName || group?.currentMember?.anonymousName || 'Ghost';
 
-    if (isLoading) return <div className="h-screen bg-[#0a0a0f] flex items-center justify-center font-mono text-cyan-400">Syncing Stalls...</div>;
+    if (isLoading) return <div className="h-screen bg-[#0a0a0f] flex items-center justify-center font-mono text-cyan-400">Syncing Messages...</div>;
 
     return (
         <>
@@ -262,7 +284,7 @@ export default function StallPage({ params }: { params: Promise<{ id: string }> 
                 {/* Sidebar */}
                 <aside className="s-sidebar">
                     <Link href="/" className="mb-10 block">
-                        <div className="font-head font-black tracking-tighter text-xl">BATHROOM</div>
+                        <div className="font-head font-black tracking-tighter text-xl text-white">StallTalk</div>
                     </Link>
 
                     <nav>

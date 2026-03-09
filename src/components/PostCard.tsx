@@ -106,7 +106,7 @@ export default function PostCard({ post, isAdmin, onDelete, onVoteUpdate }: Post
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-            className="group relative bg-[#111118] border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-all duration-300"
+            className="group relative bg-[#111118] border border-white/15 rounded-2xl p-5 hover:border-white/30 transition-all duration-300 shadow-lg"
         >
             {/* Header: Identity Chip */}
             <div className="flex items-start justify-between mb-4">
@@ -122,12 +122,12 @@ export default function PostCard({ post, isAdmin, onDelete, onVoteUpdate }: Post
 
                     <div>
                         <div className="flex items-center gap-2">
-                            <span className="text-xs font-mono font-bold text-[#f3f3f3]">{post.anonymousName}</span>
-                            <span className="text-[10px] text-[#b0b0c0]">• {timeAgo(post.createdAt)}</span>
+                            <span className="text-xs font-mono font-bold text-[#ffffff]">{post.anonymousName}</span>
+                            <span className="text-[10px] text-[#d1d1e0]">• {timeAgo(post.createdAt)}</span>
                         </div>
                         <div className="flex items-center gap-1.5 mt-1">
                             <typeLabel.icon size={10} className={typeLabel.color} />
-                            <span className={cn("text-[9px] font-bold uppercase tracking-widest", typeLabel.color)}>
+                            <span className={cn("text-[9px] font-bold uppercase tracking-widest text-opacity-100", typeLabel.color)}>
                                 {typeLabel.text}
                             </span>
                             {score >= 10 && (
@@ -183,7 +183,7 @@ export default function PostCard({ post, isAdmin, onDelete, onVoteUpdate }: Post
             </div>
 
             {/* Content Body */}
-            <div className="text-sm text-[#f3f3f3] leading-relaxed mb-5 whitespace-pre-wrap font-body selection:bg-violet-500/30">
+            <div className="text-sm text-[#ffffff] opacity-100 leading-relaxed mb-5 whitespace-pre-wrap font-body selection:bg-violet-500/30">
                 {post.content}
             </div>
 

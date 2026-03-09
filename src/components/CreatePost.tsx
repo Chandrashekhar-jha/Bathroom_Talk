@@ -70,8 +70,8 @@ export default function CreatePost({ groupId, anonymousName, onPostCreated }: Cr
 
     return (
         <div className={cn(
-            "bg-[#111118] border border-white/5 rounded-2xl overflow-hidden transition-all duration-300",
-            isExpanded ? "ring-1 ring-white/10 shadow-2xl" : "shadow-lg"
+            "bg-[#111118] border border-white/15 rounded-2xl overflow-hidden transition-all duration-300",
+            isExpanded ? "ring-1 ring-white/30 shadow-2xl" : "shadow-lg"
         )}>
             {/* Tabs Selector */}
             <div className="flex bg-[#0a0a0f] border-b border-white/5">
@@ -101,8 +101,8 @@ export default function CreatePost({ groupId, anonymousName, onPostCreated }: Cr
                             <Ghost size={16} className={currentTab.color} />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-xs font-mono font-bold text-[#f3f3f3]">{anonymousName}</span>
-                            <span className="text-[10px] text-[#b0b0c0]">Posting as Anonymous</span>
+                            <span className="text-xs font-mono font-bold text-[#ffffff]">{anonymousName}</span>
+                            <span className="text-[10px] text-[#d1d1e0]">Posting as Anonymous</span>
                         </div>
                     </div>
                     {activeTab === 'confession' && (
@@ -128,7 +128,7 @@ export default function CreatePost({ groupId, anonymousName, onPostCreated }: Cr
                                     "Ask a question to the collective..."
                     }
                     rows={isExpanded ? 4 : 2}
-                    className="w-full bg-transparent text-sm text-[#f3f3f3] placeholder-[#b0b0c0] resize-none outline-none leading-relaxed font-body"
+                    className="w-full bg-transparent text-sm text-[#ffffff] placeholder-[#d1d1e0] resize-none outline-none leading-relaxed font-body"
                 />
 
                 {/* Poll Options Builder */}
